@@ -44,8 +44,19 @@ namespace Articulate
         public static IEnumerable<string> GetAllCategories(this UmbracoHelper helper, IMasterModel masterModel)
         {
             //TODO: Make this somehow only lookup tag categories that are relavent to posts underneath the current Articulate root node!
+            var listNode = masterModel.RootBlogNode.Children
+               .FirstOrDefault(x => x.DocumentTypeAlias.InvariantEquals("ArticulateArchive"));
+            if (listNode == null)
+            {
+                throw new InvalidOperationException("An ArticulateArchive document must exist under the root Articulate document");
+            }
+            //create a blog model of the main page
+            var rootPageModel = new ListModel(listNode);
+            var tagsBaseUrl = masterModel.RootBlogNode.GetPropertyValue<string>("tagsUrlName");
 
-            return helper.TagQuery.GetAllContentTags("ArticulateCategories").Select(x => x.Text).OrderBy(x => x);
+            var contentByTags = helper.GetContentByTags(rootPageModel, "ArticulateCategories", tagsBaseUrl);
+            return new PostTagCollection(contentByTags);
+            /// return helper.TagQuery.GetAllContentTags("ArticulateCategories").Select(x => x.Text).OrderBy(x => x);
         }
 
         /// <summary>
