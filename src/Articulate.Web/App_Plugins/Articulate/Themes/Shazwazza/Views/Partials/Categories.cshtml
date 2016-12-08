@@ -3,15 +3,19 @@
 
 @{
     var categories = Umbraco.GetAllCategories(Model);
+    var tagsAndWeight = categories.Select(x => new {tag = x, weight = categories.GetTagWeight(x, 5)})
+                .OrderByDescending(x => x.weight)
+                .Take(100);
+    
 }
 
 <div class="widget categorylist">
     <h4>Categories</h4>
     <div class="content">
         <ul id="categorylist">
-            @foreach (var c in categories)
+            @foreach (var c in tagsAndWeight)
             {
-                <li><a href="@Url.ArticulateCategoryUrl(Model, c)" title="Category: @c">@c</a></li>
+                <li><a href="@Url.ArticulateCategoryUrl(Model, c.tag.TagName)" title="Category: @c.tag.TagName">@c.tag.TagName</a></li>
             }
         </ul>
     </div>

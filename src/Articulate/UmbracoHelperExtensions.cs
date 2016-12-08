@@ -41,7 +41,7 @@ namespace Articulate
         /// <param name="helper"></param>
         /// <param name="masterModel"></param>
         /// <returns></returns>
-        public static IEnumerable<string> GetAllCategories(this UmbracoHelper helper, IMasterModel masterModel)
+        public static PostTagCollection GetAllCategories(this UmbracoHelper helper, IMasterModel masterModel)
         {
             //TODO: Make this somehow only lookup tag categories that are relavent to posts underneath the current Articulate root node!
             var listNode = masterModel.RootBlogNode.Children
